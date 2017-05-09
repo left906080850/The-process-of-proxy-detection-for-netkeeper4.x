@@ -1,9 +1,9 @@
 
-
-
-// SNKT_wifi_help code for hide Agent process
-// URL£º www.simplenktools.cn
-// code by ©³Š¢…øÚ[¥Ú
+Â 
+//============VS 2013ç¼–è¯‘é€šè¿‡============
+// ============SNKT_wifi_help code for hide Agent process============
+// ============URLï¼š www.simplenktools.cn============
+// ============code by â”å§ å’—èµ±ãƒš============
 
 #include <windows.h>
 
@@ -167,7 +167,7 @@ typedef NTSTATUS (NTAPI *ZWQUERYSYSTEMINFORMATION)(
 								  IN ULONG SystemInformationLength,
 								  OUT PULONG ReturnLength OPTIONAL
 								  );
-//APIHOOK½á¹¹   
+//APIHOOKç»“æ„   
 #define  CodeLength 7
 typedef struct   
 { 
@@ -180,13 +180,13 @@ typedef struct
 
 
 
-BYTE hook_code[7] =   {0xb8, 0, 0, 0, 0 ,0xff, 0xe0};//¹¹Ôì jmp code
+BYTE hook_code[7] =   {0xb8, 0, 0, 0, 0 ,0xff, 0xe0};//æ„é€  jmp code
 ZWQUERYSYSTEMINFORMATION ZwQuerySystemInformation;	 
 HANDLE hProcess=0;
 HOOKSTRUCT hookinfo;
 																					
 								
-int HidePid = 0;				//´ıÒş²ØµÄ½ø³ÌPID  Ìá¹© 360wifi.exe 360AP.exe µÈwifi´úÀíÈí¼şµÄ½ø³ÌID ÒÔ±£Ö¤¿Í»§¶ËÌø¹ıÆä¼ìË÷
+int HidePid = 0;				//å¾…éšè—çš„è¿›ç¨‹PID  æä¾› 360wifi.exe 360AP.exe ç­‰wifiä»£ç†è½¯ä»¶çš„è¿›ç¨‹ID ä»¥ä¿è¯å®¢æˆ·ç«¯è·³è¿‡å…¶æ£€ç´¢
 
 BOOL WINAPI inlinehook(HOOKSTRUCT *hookfunc);
 BOOL WINAPI uninlinehook(HOOKSTRUCT *hookfunc);
@@ -234,14 +234,14 @@ NTSTATUS NTAPI MyZwQuerySystemInformation(
 		while (TRUE)
 		{	
 			
-			if (SystemProcessesinfo->ProcessId == HidePid) //ĞèÒªÒş²ØµÄPID 
+			if (SystemProcessesinfo->ProcessId == HidePid) //éœ€è¦éšè—çš„PID 
 			{
 				if (SystemProcessesinfo->NextEntryDelta)
 				{
-					//ĞèÒªÒş²ØµÄ½ø³ÌºóÃæ»¹ÓĞ½ø³ÌÊ±Ö±½ÓÖ¸ÏòÏÂÒ»¸öÁ´±íÖ¸Õë
+					//éœ€è¦éšè—çš„è¿›ç¨‹åé¢è¿˜æœ‰è¿›ç¨‹æ—¶ç›´æ¥æŒ‡å‘ä¸‹ä¸€ä¸ªé“¾è¡¨æŒ‡é’ˆ
 
 					DWORD dwOldProtect;
-					//¸Ä³É¶ÁĞ´¿ÉÖ´ĞĞ×´Ì¬
+					//æ”¹æˆè¯»å†™å¯æ‰§è¡ŒçŠ¶æ€
 					if(!VirtualProtect((void *)Prev, sizeof(_SYSTEM_PROCESSES)*3, PAGE_EXECUTE_READWRITE, &dwOldProtect))
 					{
 						//MessageBox(NULL,"VirtualProtect error!","error",MB_OK);
@@ -252,7 +252,7 @@ NTSTATUS NTAPI MyZwQuerySystemInformation(
 				}
 				else
 				{
-					//½ø³Ì´¦ÓÚ×îºóÒ»¸öÊı¾İ°ÑÉÏÒ»¸öÁ´±íÖ¸ÕëµÄÖÃ0
+					//è¿›ç¨‹å¤„äºæœ€åä¸€ä¸ªæ•°æ®æŠŠä¸Šä¸€ä¸ªé“¾è¡¨æŒ‡é’ˆçš„ç½®0
 					
 					Prev->NextEntryDelta=0;
 				}
@@ -271,13 +271,13 @@ BOOL WINAPI inlinehook(HOOKSTRUCT *hookfunc)
 {
 	
 	DWORD dwOldProtect;
-	//¸Ä³É¶ÁĞ´¿ÉÖ´ĞĞ×´Ì¬
+	//æ”¹æˆè¯»å†™å¯æ‰§è¡ŒçŠ¶æ€
 	if(!VirtualProtect((void *)hookfunc->OldFuncAddr, CodeLength, PAGE_EXECUTE_READWRITE, &dwOldProtect))
 	{
 		//(NULL,"VirtualProtect error!","error",MB_OK);
 		return false;
 	}
-	//±£´æÔ­»úÆ÷Âë
+	//ä¿å­˜åŸæœºå™¨ç 
 	memcpy(hookfunc->OldCode,(unsigned char *)hookfunc->OldFuncAddr,CodeLength);
 	if(memcpy((unsigned char *)hookfunc->OldFuncAddr, hookfunc->NewCode, CodeLength)==0)
 	{
@@ -297,7 +297,7 @@ BOOL WINAPI uninlinehook(HOOKSTRUCT *hookfunc)
 		//(NULL,"VirtualProtect error!","error",MB_OK);
 		return false;
 	}
-	//¸Ä»ØÔ­»úÆ÷Âë
+	//æ”¹å›åŸæœºå™¨ç 
 	if(memcpy((unsigned char *)hookfunc->OldFuncAddr, hookfunc->OldCode, CodeLength)==0)
 	{
 		
@@ -317,7 +317,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	switch(ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		init(GetCurrentProcessId());//»ñµÃµ±Ç°×Ô¼º½ø³ÌID ÓÃÓÚ²âÊÔĞ§¹û
+		init(GetCurrentProcessId());//è·å¾—å½“å‰è‡ªå·±è¿›ç¨‹ID ç”¨äºæµ‹è¯•æ•ˆæœ
 		break;
 	case DLL_PROCESS_DETACH:
 		uninlinehook(&hookinfo);
